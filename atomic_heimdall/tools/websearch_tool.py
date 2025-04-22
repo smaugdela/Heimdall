@@ -21,7 +21,8 @@ class DuckDuckGoSearchToolInputSchema(BaseIOSchema):
     Returns a list of search results.
     """
     queries: List[str] = Field(..., description="List of search queries.")
-    max_results: Optional[int] = Field(10, description="Maximum number of results to retrieve per query.")
+    max_results: Optional[int] = Field(3, description="Maximum number of results to retrieve per query.")
+    category: Optional[str] = Field("text", description="Type of search to perform (text, images, news).")
 
 
 ####################
@@ -125,28 +126,23 @@ class DuckDuckGoSearchTool(BaseTool):
         wait=wait_exponential(multiplier=1, min=1, max=10),
         reraise=True,
     )
-    def run(
-        self, params: DuckDuckGoSearchToolInputSchema, max_results: Optional[int] = None, search_type: str = "text"
-    ) -> DuckDuckGoSearchToolOutputSchema:
+    def run(self, params: DuckDuckGoSearchToolInputSchema) -> DuckDuckGoSearchToolOutputSchema:
         """
         Runs the DuckDuckGoSearchTool with the given parameters.
 
         Args:
             params (DuckDuckGoSearchToolInputSchema): The input parameters for the tool.
-            max_results (Optional[int]): The maximum number of search results to return (overrides input schema).
-            search_type (str): The type of search to perform ('text', 'images', 'videos', 'news').
 
         Returns:
             DuckDuckGoSearchToolOutputSchema: The output of the tool.
         """
         all_results = []
-        effective_max_results = max_results if max_results is not None else params.max_results
 
         for query in params.queries:
             results = self._fetch_search_results(
                 query,
-                effective_max_results,
-                search_type
+                params.max_results,
+                params.category,
             )
             all_results.extend(results)
 
@@ -158,7 +154,7 @@ class DuckDuckGoSearchTool(BaseTool):
                 unique_results.append(result)
                 seen_urls.add(result.get("url") or result.get("href"))
 
-        if search_type == "text":
+        if params.category == "text":
             formatted_results = [
                 DuckDuckGoSearchResultItemSchema(
                     url=result.get("url") or result.get("href"),
@@ -170,7 +166,7 @@ class DuckDuckGoSearchTool(BaseTool):
             ]
             return DuckDuckGoSearchToolOutputSchema(results=formatted_results)
 
-        elif search_type == "images":
+        elif params.category == "images":
             formatted_results = [
                 DuckDuckGoImageResultItemSchema(
                     url=result.get("url") or result.get("href"),
@@ -185,7 +181,7 @@ class DuckDuckGoSearchTool(BaseTool):
             ]
             return DuckDuckGoImageSearchToolOutputSchema(results=formatted_results)
 
-        elif search_type == "news":
+        elif params.category == "news":
             formatted_results = [
                 DuckDuckGoNewsResultItemSchema(
                     url=result.get("url") or result.get("href"),

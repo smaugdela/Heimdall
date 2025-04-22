@@ -69,7 +69,7 @@ class WebpageScraperToolConfig(BaseToolConfig):
         description="Timeout in seconds for HTTP requests.",
     )
     max_content_length: int = Field(
-        default=1_000_000,
+        default=100_000,
         description="Maximum content length in bytes to process.",
     )
 
@@ -116,9 +116,10 @@ class WebpageScraperTool(BaseTool):
         response.raise_for_status()
 
         if len(response.content) > self.config.max_content_length:
-            raise ValueError(f"Content length exceeds maximum of {self.config.max_content_length} bytes")
+            # raise ValueError(f"Content length exceeds maximum of {self.config.max_content_length} bytes")
+            print(f"Warning: Content length ({len(response.content)}) exceeds maximum of {self.config.max_content_length} bytes")
 
-        return response.text
+        return response.text[:self.config.max_content_length]
 
     def _extract_metadata(self, soup: BeautifulSoup, doc: Document, url: str) -> WebpageMetadata:
         """
