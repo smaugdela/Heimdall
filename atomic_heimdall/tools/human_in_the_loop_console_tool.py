@@ -85,7 +85,7 @@ class HumanInTheLoopConsoleTool(BaseTool):
                         break
 
                 elif approval == 'n':
-                    reason = input("Please provide a reason for rejection (or press Enter to skip): ", file=sys.stderr).strip()
+                    reason = input("Please provide a reason for rejection (or press Enter to skip): ").strip()
                     if not reason:
                         reason = "No reason provided."
                     output_result = "User rejected the command execution. Reason: " + reason
@@ -95,7 +95,7 @@ class HumanInTheLoopConsoleTool(BaseTool):
 
                 elif approval == 'edit':
                     print("Please enter the new command (or press Enter to cancel):", file=sys.stderr)
-                    new_command = input("> ")
+                    new_command = input(">> ")
                     if new_command.strip():
                         command = new_command # Update command to the edited version
                         print(f"Updated command: `{command}`", file=sys.stderr)

@@ -20,9 +20,9 @@ from heimdall_agent import HeimdallAgent
 from schemas.agent_schemas import HeimdallInputSchema, HeimdallOutputSchema, TextMessageSchema
 
 # Import tools and their configs/schemas
-from tools.human_in_the_loop_console_tool import HumanInTheLoopConsoleTool, ConsoleToolConfig, ConsoleToolInputSchema, ConsoleToolOutputSchema
-from tools.file_manager_tool import FileManagerTool, FileManagerConfig, FileManagerInputSchema, FileManagerOutputSchema
-from tools.web_search_tool_wrapper import WebSearchToolWrapper, WebSearchToolConfig, WebSearchToolInputSchema, WebSearchToolOutputSchema
+from tools.human_in_the_loop_console_tool import HumanInTheLoopConsoleTool, ConsoleToolConfig
+from tools.file_manager_tool import FileManagerTool, FileManagerConfig
+from tools.web_search_tool_wrapper import WebSearchToolWrapper, WebSearchToolConfig
 
 # --- Configuration ---
 load_dotenv(find_dotenv())
@@ -224,7 +224,7 @@ def main():
                             result_str = tool_output.model_dump_json()
                             last_tool_result_str = result_str # Store for next agent input
                             heimdall_agent.memory.add_message(
-                                role="system", # Use 'system' or 'tool_result'
+                                role="system",
                                 content=TextMessageSchema(text=f"Tool '{tool_name}' output:\n{result_str}")
                             )
                             # Continue the inner loop
