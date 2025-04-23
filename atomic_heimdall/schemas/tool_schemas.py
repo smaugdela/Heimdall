@@ -45,7 +45,7 @@ class FileManagerConfig(BaseToolConfig):
 
 class WebSearchToolInputSchema(BaseIOSchema):
     """Input schema for the WebSearchTool wrapper."""
-    user_query: str = Field(..., description="The natural language query to search the web for.")
+    query: str = Field(..., description="The natural language query to search the web for.")
 
 class WebSearchToolOutputSchema(BaseIOSchema):
     """
@@ -58,4 +58,3 @@ class WebSearchToolOutputSchema(BaseIOSchema):
 class WebSearchToolConfig(BaseToolConfig):
     """Configuration for the Web Search Tool Wrapper (if any needed)."""
     pass # No specific config needed for the wrapper itself for now
-

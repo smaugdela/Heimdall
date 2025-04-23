@@ -20,6 +20,7 @@ class HumanInTheLoopConsoleTool(BaseTool):
     def run(self, params: ConsoleToolInputSchema) -> ConsoleToolOutputSchema:
         """
         Proposes the command to the user and executes it if approved.
+        You may use sudo for commands that require elevated privileges.
 
         Args:
             params: Input parameters including the command and reason.
@@ -84,8 +85,11 @@ class HumanInTheLoopConsoleTool(BaseTool):
                         break
 
                 elif approval == 'n':
-                    print("Command rejected by user.", file=sys.stderr)
-                    output_result = "User rejected the command execution."
+                    reason = input("Please provide a reason for rejection (or press Enter to skip): ", file=sys.stderr).strip()
+                    if not reason:
+                        reason = "No reason provided."
+                    output_result = "User rejected the command execution. Reason: " + reason
+                    print(f"Command rejected by user. Reason: {reason}", file=sys.stderr)
                     executed = False
                     break # Exit loop after rejection
 

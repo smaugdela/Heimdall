@@ -46,7 +46,7 @@ class WebSearchToolWrapper(BaseTool):
         Returns:
             Output schema containing the final_answer and success status.
         """
-        user_query = params.user_query
+        user_query = params.query
         final_answer = None
         success = False
 

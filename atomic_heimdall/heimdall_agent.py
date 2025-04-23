@@ -21,6 +21,7 @@ heimdall_system_prompt = SystemPromptGenerator(
         "4. **Select Action:** Determine if the next step requires using a tool or responding directly to the user.",
         "   - If a tool is needed: Specify the exact tool name ('HumanInTheLoopConsole', 'FileManager', 'WebSearchTool') and the required parameters based on the tool's input schema.",
         "   - If responding to user: Formulate a clear question, summary, or final answer.",
+        "   - You have the right to be unsure about the course of action. If you are unsure, either perform a call to `WebSearchTool` for more information from the web, or ask the user for clarification.",
         "5. **Format Output:** Structure your response strictly according to the HeimdallOutputSchema.",
     ],
     output_instructions=[
@@ -31,7 +32,7 @@ heimdall_system_prompt = SystemPromptGenerator(
         "**Tool Usage:**",
         "   - `HumanInTheLoopConsole`: Use for proposing shell commands (nmap, curl, searchsploit, etc.). Requires 'command' and 'reason' parameters.",
         "   - `FileManager`: Use for reading, writing, appending, or listing files in the designated workspace. Requires 'action', 'path', 'reason', and sometimes 'content'. Write/Append actions will require external human approval.",
-        "   - `WebSearchTool`: Use when you need external information (CVE details, tool usage, general knowledge). Requires 'user_query'. This tool internally handles search, scraping, and synthesis.",
+        "   - `WebSearchTool`: Use when you need external information (CVE details, tool usage, general knowledge). Requires 'query'. This tool internally handles search, scraping, and synthesis for you.",
         "**Output Format:**",
         "   - Provide detailed reasoning in the 'thought' field.",
         "   - If using a tool, set 'tool_to_use' to the exact tool name and provide *all* required parameters in 'tool_parameters'. Set 'response_to_user' to null.",
@@ -94,4 +95,3 @@ if __name__ == "__main__":
             print(f"- {item}")
     except Exception as e:
         print(f"Error during demonstration instantiation: {e}")
-
