@@ -6,6 +6,7 @@ anyio==4.9.0
 atomic-agents==1.1.0
 attrs==25.3.0
 beautifulsoup4==4.13.4
+cachetools==5.5.2
 certifi==2025.1.31
 chardet==5.2.0
 charset-normalizer==3.4.1
@@ -19,6 +20,7 @@ frozenlist==1.6.0
 fsspec==2025.3.2
 gitdb==4.0.12
 GitPython==3.1.44
+google-auth==2.39.0
 h11==0.14.0
 helium==5.1.1
 httpcore==1.0.8
@@ -46,6 +48,8 @@ pillow==11.2.1
 platformdirs==4.3.7
 primp==0.15.0
 propcache==0.3.1
+pyasn1==0.6.1
+pyasn1_modules==0.4.2
 pydantic==2.10.3
 pydantic_core==2.27.1
 pyfiglet==1.0.2
@@ -56,6 +60,7 @@ PyYAML==6.0.2
 readability-lxml==0.8.1
 requests==2.32.3
 rich==13.9.4
+rsa==4.9.1
 selenium==4.31.0
 shellingham==1.5.4
 six==1.17.0
@@ -77,5 +82,6 @@ typing_extensions==4.13.2
 uc-micro-py==1.0.3
 urllib3==2.4.0
 websocket-client==1.8.0
+websockets==15.0.1
 wsproto==1.2.0
 yarl==1.20.0
