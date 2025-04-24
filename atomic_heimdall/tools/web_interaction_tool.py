@@ -1,11 +1,11 @@
 from typing import Optional
 from pydantic import Field, BaseModel
-
-from atomic_agents.lib.base.base_tool import BaseTool, BaseToolConfig
 import helium
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
+
+from atomic_agents.lib.base.base_tool import BaseTool, BaseToolConfig
 
 
 ################
@@ -157,9 +157,8 @@ class HeliumTool(BaseTool):
                 result += "Screenshot captured. "
 
         except Exception as e:
-            #  Include the error message in the result.
             result = f"Error: {e}"
-            print(result)  #  Print the error for debugging
+            print(result)
         finally:
             return HeliumToolOutputSchema(result=result, screenshot=screenshot, page_source=page_source, current_url=current_url)
 

@@ -1,13 +1,9 @@
-# heimdall_atomic/heimdall_agent.py
-
 import sys
 from atomic_agents.agents.base_agent import BaseAgent, BaseAgentConfig
 from atomic_agents.lib.components.system_prompt_generator import SystemPromptGenerator
 from atomic_agents.lib.components.agent_memory import AgentMemory
 from schemas.agent_schemas import HeimdallInputSchema, HeimdallOutputSchema
 
-# Define the system prompt using SystemPromptGenerator
-# This is adapted from the original smol-agents persona
 heimdall_system_prompt = SystemPromptGenerator(
     background=[
         "You are Heimdall, an AI assistant specialized in aiding human operators with ethical penetration testing tasks.",
@@ -39,11 +35,8 @@ heimdall_system_prompt = SystemPromptGenerator(
         "   - If responding directly to the user (e.g., asking for clarification, summarizing findings), set 'response_to_user' with your message. Set 'tool_to_use' and 'tool_parameters' to null.",
         "   - Only use one mode of output (tool OR response_to_user) per turn.",
     ],
-    # No context providers needed for this basic version
-    context_providers={}
 )
 
-# Define the Heimdall Agent class
 class HeimdallAgent(BaseAgent):
     """
     The main Heimdall agent for orchestrating pentesting tasks.
@@ -68,15 +61,13 @@ class HeimdallAgent(BaseAgent):
             input_schema=HeimdallInputSchema,
             output_schema=HeimdallOutputSchema,
             memory=memory,
-            max_retries=3, # Allow retries if output schema validation fails
-            model_api_parameters={"temperature": 0.5} # Adjust temperature for more/less creative planning
+            max_retries=3,
+            model_api_parameters={"temperature": 0.5}
         )
         super().__init__(config)
         print(f"HeimdallAgent initialized with model: {model}", file=sys.stderr)
 
-# Example of how to instantiate (used in main.py)
 if __name__ == "__main__":
-    # This block is for demonstration; actual instantiation happens in main.py
     print("HeimdallAgent class defined. Instantiate and use within the main execution script.")
 
     # Example dummy client for illustration

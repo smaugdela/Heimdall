@@ -1,7 +1,6 @@
 from typing import Optional
 from urllib.parse import urlparse
 import re
-
 import requests
 from bs4 import BeautifulSoup
 from markdownify import markdownify

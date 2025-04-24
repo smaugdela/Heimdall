@@ -1,5 +1,3 @@
-# heimdall_atomic/tools/file_manager_tool.py
-
 import os
 import sys
 from typing import Optional
@@ -23,7 +21,7 @@ class FileManagerTool(BaseTool):
                 print(f"Created working directory: {self.working_dir}", file=sys.stderr)
             except OSError as e:
                 print(f"CRITICAL Error creating working directory {self.working_dir}: {e}", file=sys.stderr)
-                raise # Re-raise the exception as this is critical
+                raise
 
         print(f"FileManagerTool initialized. Operations restricted to: {self.working_dir}", file=sys.stderr)
 
@@ -34,7 +32,6 @@ class FileManagerTool(BaseTool):
              print(f"Error: Absolute paths are not allowed: {path}", file=sys.stderr)
              return None
 
-        # Join with working directory and normalize
         abs_path = os.path.normpath(os.path.join(self.working_dir, path))
 
         # Security check: Ensure the resolved path is still within the working directory
@@ -73,7 +70,7 @@ class FileManagerTool(BaseTool):
         action = params.action
         path = params.path
         reason = params.reason
-        content_to_write = params.content # Renamed to avoid conflict
+        content_to_write = params.content
 
         safe_abs_path = self._resolve_path(path)
         if not safe_abs_path:
@@ -119,7 +116,6 @@ class FileManagerTool(BaseTool):
                     output_status = f"Error: 'content' parameter is required for '{action}' action."
                 else:
                     parent_dir = os.path.dirname(safe_abs_path)
-                    # Ensure the target directory exists
                     if not os.path.exists(parent_dir):
                         try:
                             os.makedirs(parent_dir)
@@ -130,11 +126,9 @@ class FileManagerTool(BaseTool):
                         output_status = f"Error: Cannot create file, '{os.path.dirname(path)}' is not a directory."
                         return FileManagerOutputSchema(status=output_status, action_performed=False) # Early exit
 
-                    # --- HUMAN IN THE LOOP ---
                     if not self._confirm_write_action(action, path, reason, content_to_write):
                         output_status = f"User rejected the '{action}' operation on '{path}'."
                     else:
-                        # --- END HITL ---
                         mode = 'w' if action == 'write' else 'a'
                         with open(safe_abs_path, mode, encoding='utf-8') as f:
                             f.write(content_to_write)
@@ -145,11 +139,11 @@ class FileManagerTool(BaseTool):
 
         except IOError as e:
             output_status = f"Error performing '{action}' on '{path}': {e}"
-            action_performed = False # Ensure flag is false on error
+            action_performed = False
         except Exception as e:
             print(f"Unexpected error in FileManagerTool: {e}", file=sys.stderr)
             output_status = f"Unexpected error during file operation: {e}"
-            action_performed = False # Ensure flag is false on error
+            action_performed = False
 
         return FileManagerOutputSchema(
             status=output_status,
@@ -157,9 +151,9 @@ class FileManagerTool(BaseTool):
             action_performed=action_performed
         )
 
-# Example usage (for testing the tool directly)
+# Example usage
 if __name__ == "__main__":
-    # Create a dummy workspace for testing
+
     test_dir = "test_fm_workspace"
     if not os.path.exists(test_dir):
         os.makedirs(test_dir)
@@ -168,32 +162,26 @@ if __name__ == "__main__":
 
     fm_tool = FileManagerTool(config=FileManagerConfig(working_dir=test_dir))
 
-    # Test List
     print("--- Testing List ---")
     result = fm_tool.run(FileManagerInputSchema(action="list", path=".", reason="List base directory"))
     print(result.model_dump_json(indent=2))
 
-    # Test Write (will prompt)
     print("\n--- Testing Write ---")
     result = fm_tool.run(FileManagerInputSchema(action="write", path="new_notes.txt", content="This is a test note.", reason="Creating a test note"))
     print(result.model_dump_json(indent=2))
 
-    # Test Read
     print("\n--- Testing Read ---")
     result = fm_tool.run(FileManagerInputSchema(action="read", path="new_notes.txt", reason="Reading the test note"))
     print(result.model_dump_json(indent=2))
 
-    # Test Append (will prompt)
     print("\n--- Testing Append ---")
     result = fm_tool.run(FileManagerInputSchema(action="append", path="new_notes.txt", content="\nAdding more info.", reason="Appending to the test note"))
     print(result.model_dump_json(indent=2))
 
-    # Test Write to subdir (will create dir and prompt)
     print("\n--- Testing Write Subdir ---")
     result = fm_tool.run(FileManagerInputSchema(action="write", path="subdir/another_note.txt", content="Note in subdir", reason="Create note in subdir"))
     print(result.model_dump_json(indent=2))
 
-    # Test List subdir
     print("\n--- Testing List Subdir ---")
     result = fm_tool.run(FileManagerInputSchema(action="list", path="subdir", reason="List subdir after creation"))
     print(result.model_dump_json(indent=2))
@@ -209,7 +197,6 @@ if __name__ == "__main__":
     result = fm_tool.run(FileManagerInputSchema(action="read", path=abs_path_test, reason="Attempting absolute path"))
     print(result.model_dump_json(indent=2))
 
-
-    # Clean up test workspace (optional)
-    # import shutil
-    # shutil.rmtree(test_dir)
+    # Clean up test workspace
+    import shutil
+    shutil.rmtree(test_dir)

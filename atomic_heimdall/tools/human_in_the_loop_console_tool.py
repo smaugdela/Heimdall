@@ -1,5 +1,3 @@
-# heimdall_atomic/tools/human_in_the_loop_console_tool.py
-
 import subprocess
 import shlex
 import sys
@@ -47,15 +45,15 @@ class HumanInTheLoopConsoleTool(BaseTool):
                 if approval == 'y':
                     print("Executing command...", file=sys.stderr)
                     try:
-                        # Use shlex.split for safer command parsing
+                        # shlex for command parsing
                         process = subprocess.run(
                             shlex.split(command),
                             capture_output=True,
                             text=True,
-                            check=False, # Don't raise exception on non-zero exit code
+                            check=False, # No exception raised
                             timeout=self.timeout
                         )
-                        # Combine stdout and stderr
+
                         output = f"Exit Code: {process.returncode}\n"
                         if process.stdout:
                             output += f"--- STDOUT ---\n{process.stdout}\n"
@@ -65,7 +63,7 @@ class HumanInTheLoopConsoleTool(BaseTool):
                         output_result = output.strip()
                         executed = True
                         print("Command execution finished.", file=sys.stderr)
-                        break # Exit loop after execution
+                        break
 
                     except subprocess.TimeoutExpired:
                         print(f"Error: Command timed out after {self.timeout} seconds.", file=sys.stderr)
@@ -91,21 +89,20 @@ class HumanInTheLoopConsoleTool(BaseTool):
                     output_result = "User rejected the command execution. Reason: " + reason
                     print(f"Command rejected by user. Reason: {reason}", file=sys.stderr)
                     executed = False
-                    break # Exit loop after rejection
+                    break
 
                 elif approval == 'edit':
                     print("Please enter the new command (or press Enter to cancel):", file=sys.stderr)
                     new_command = input(">> ")
                     if new_command.strip():
-                        command = new_command # Update command to the edited version
+                        command = new_command
                         print(f"Updated command: `{command}`", file=sys.stderr)
-                        # Loop back to ask for approval of the *new* command
                         continue
                     else:
                         print("Edit cancelled. Command rejected.", file=sys.stderr)
                         output_result = "User cancelled edit and rejected the command execution."
                         executed = False
-                        break # Exit loop after cancellation
+                        break
                 else:
                     print("Invalid input. Please enter 'y', 'n', or 'edit'.", file=sys.stderr)
 
@@ -113,16 +110,16 @@ class HumanInTheLoopConsoleTool(BaseTool):
                 print("\nOperation interrupted/cancelled by user. Rejecting command.", file=sys.stderr)
                 output_result = "User interrupted/cancelled the operation, command rejected."
                 executed = False
-                break # Exit loop on interrupt
+                break
 
         return ConsoleToolOutputSchema(result=output_result, executed=executed)
 
 # Example usage (for testing the tool directly)
 if __name__ == "__main__":
     console_tool = HumanInTheLoopConsoleTool()
-    # Test 1: Simple command
+
     result = console_tool.run(ConsoleToolInputSchema(command="echo 'Hello from Heimdall!'", reason="Testing echo command"))
     print("\nResult:\n", result.model_dump_json(indent=2))
-    # Test 2: Listing files
+
     result = console_tool.run(ConsoleToolInputSchema(command="ls -lha", reason="Listing files in the current directory"))
     print("\nResult:\n", result.model_dump_json(indent=2))
