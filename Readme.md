@@ -13,6 +13,8 @@ Heimdall is an AI agent designed to aid in ethical penetration testing tasks. It
 - **Agent Memory**: Maintains context across multiple steps for better decision-making.
 - **Rich Output**: Uses the `rich` library for visually appealing console output.
 
+![console_screenshot](Heimdall_console_screen.png)
+
 ## Repository Structure
 
 ```
