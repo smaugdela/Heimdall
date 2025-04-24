@@ -2,6 +2,7 @@
 # Heimdall - Atomic Pentesting Assistant
 
 Heimdall is an AI agent designed to aid in ethical penetration testing tasks. It is merely an educational project for me, in order to practice building agents from scratch.
+It was built using the excellent Atomic Agent framework.
 
 ## Features
 
@@ -14,6 +15,10 @@ Heimdall is an AI agent designed to aid in ethical penetration testing tasks. It
 - **Rich Output**: Uses the `rich` library for visually appealing console output.
 
 ![console_screenshot](Heimdall_console_screen.png)
+
+## Disclaimer
+
+This agent CAN RUN COMMAND ON YOUR CONSOLE, this can be EXTREMELY DANGEROUS. That is why it systematically asks for human review before running anything. USE AT YOUR OWN RISK. I shall not endorse the responsibility for your actions using this tool. Also keep in mind that it is still buggy, as with most LLM agents flows.
 
 ## Repository Structure
 
@@ -110,8 +115,6 @@ Heimdall is an AI agent designed to aid in ethical penetration testing tasks. It
 
 - **Provider Selection**: Modify the `PROVIDER` variable in `main.py` to choose the AI provider (`gemini`, `openai`, `ollama`, or `mistral`).
 - **File Manager Workspace**: The `FileManager` tool operates within the `heimdall_workspace/` directory. Ensure this directory exists or is created during runtime.
-
-## Development
 
 ### Running Tests
 - Each tool includes example usage in its `if __name__ == "__main__":` block. Run these scripts directly to test individual tools.
